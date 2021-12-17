@@ -81,7 +81,7 @@ abstract class SettingCommand(
 
     protected val silent by option(
         "-s", "--silent",
-        help = "Do not echo progress or prompt for confirmation"
+        help = "Do not echo progress, results or prompt for confirmation"
     ).flag(default = false)
 
     protected val inputOption = option(
@@ -579,13 +579,18 @@ abstract class PutSettingCommand(
     private val inputFile by inputOption
     private val useJson: Boolean by jsonOption
 
+    private val noDiff by option(
+        "--no-diff",
+        help = "Do not diff the input file before sending"
+    ).flag(default = false)
+
     override fun run() {
         checkApi(cliEnvironment)
         val (name, payload) = if (useJson)
             fromJson(readInput(inputFile), settingType)
         else
             fromYaml(readInput(inputFile), settingType)
-        if (!silent) {
+        if (!silent && !noDiff) {
             val differences = diff(cliEnvironment, cliAccessToken, settingType, name, payload)
             if (differences.isNotEmpty()) {
                 echoDiff(differences)
@@ -593,7 +598,7 @@ abstract class PutSettingCommand(
             }
         }
         val output = put(cliEnvironment, cliAccessToken, settingType, name, payload)
-        writeOutput(output)
+        echo(output)
     }
 }
 
@@ -819,6 +824,11 @@ class PutMultipleSettings : SettingCommand(
     )
         .flag(default = false)
 
+    private val noDiff by option(
+        "--no-diff",
+        help = "Do not diff the input file before sending"
+    ).flag(default = false)
+
     override fun run() {
         // First wait for the API to come online
         echo("Waiting for the API at ${cliEnvironment.url} to be available...")
@@ -826,7 +836,7 @@ class PutMultipleSettings : SettingCommand(
 
         if (!checkLastModified || (checkLastModified && isFileUpdated())) {
             echo("Loading settings from ${inputFile.absolutePath}...")
-            if (!silent) {
+            if (!silent && !noDiff) {
                 val differences = diffAll(inputFile)
                 if (differences.isNotEmpty()) {
                     echoDiff(differences)
@@ -835,7 +845,7 @@ class PutMultipleSettings : SettingCommand(
             }
             val results = putAll(inputFile)
             val output = "${results.joinToString("\n")}\n"
-            writeOutput(output)
+            echo(output)
         } else {
             echo("No new updates found for settings.")
         }
