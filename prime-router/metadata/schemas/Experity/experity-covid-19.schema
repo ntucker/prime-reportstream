@@ -16,10 +16,20 @@ elements:
     - name: processing_mode_code
       csvFields: [{name: processing_mode_code}]
 
-    - name: message_id
-      csvFields: [{name: Testing_lab_accession_number}]
+    - name: testing_lab_clia
+      csvFields: [{name: Testing_lab_ID}]
 
-#demographics
+    - name: input_sender_id_test_performed
+      csvFields: [{name: input_sender_id_test_performed}]
+      type: TABLE
+      table: test_performed_lookup
+      tableColumn: sender_id
+
+    - name: input_sender_id_provider
+      csvFields: [{name: input_sender_id_provider}]
+
+
+#key IDs
     - name: patient_id
       csvFields: [{name: Patient_ID}]
 
@@ -29,6 +39,12 @@ elements:
     - name: patient_id_type
       default: "PI"
 
+    - name: message_id
+      mapper: concat(patient_id, $index, $currentDate)
+      delimiter: "-"
+
+
+#demographics
     - name: patient_last_name
       csvFields: [{name: Patient_last_name}]
 
@@ -87,6 +103,35 @@ elements:
       default: UNK
 
 # Specimen/Order Info
+    - name: Ordered_test_description_temp
+      type: TEXT
+      csvFields: [{name: Ordered_test_description}]
+
+    - name: Test_performed_description_temp
+      type: TEXT
+      csvFields: [{name: Test_performed_description}]
+
+    - name: input_test_kit_name_id
+      mapper: concat(Ordered_test_description_temp, Test_performed_description_temp)
+      delimiter: "+"
+      type: TABLE
+      table: test_performed_lookup
+      tableColumn: generic_test_performed
+
+    - name: test_kit_name_id
+      type: TABLE
+      table: test_performed_lookup
+      tableColumn: exact_test_performed
+      mapper: lookup(input_sender_id_test_performed, input_test_kit_name_id)
+      mapperOverridesValue: true
+
+    - name: test_performed_code
+      type: TABLE
+      table: test_performed_lookup
+      tableColumn: exact_test_performed_code
+      mapper: lookup(input_sender_id_test_performed, input_test_kit_name_id)
+      mapperOverridesValue: true
+
     - name: specimen_collection_date_time
       csvFields: [{name: Specimen_collection_date_time, format: "M/d/yyyy H:nn"}]
 
@@ -113,24 +158,28 @@ elements:
       default: F
 
     - name: filler_order_id
-      csvFields: [{name: Testing_lab_accession_number}]
+      mapper: use(message_id)
 
     - name: placer_order_id
-      csvFields: [{name: Testing_lab_accession_number}]
+      mapper: use(message_id)
 
     - name: specimen_type
-      type: CODE
-      valueSet: sender-automation/specimen_type
-      documentation: Translate inbound text to outbound SNOMED Codes
-      csvFields: [{ name: Specimen_type_description, format: $display}]
       default: "258500001"
+      type: TABLE
+      table: test_performed_lookup
+      tableColumn: exact_specimen_type
+      mapper: lookup(input_sender_id_test_performed, input_test_kit_name_id)
+      mapperOverridesValue: true
+
 
     - name: specimen_source_site_code
-      type: CODE
-      valueSet: sender-automation/specimen_source_site_code
       documentation: Translate inbound text to outbound SNOMED Codes
-      csvFields: [{ name: Specimen_type_description, format: $display}]
       default: "71836000"
+      type: TABLE
+      table: test_performed_lookup
+      tableColumn: exact_specimen_type_source_site
+      mapper: lookup(input_sender_id_test_performed, input_test_kit_name_id)
+      mapperOverridesValue: true
 
 
 # Ordering provider
@@ -214,12 +263,6 @@ elements:
 
 
 #CLIA
-    - name: testing_lab_clia
-      csvFields: [{name: Testing_lab_ID}]
-
-    - name: testing_lab_id
-      csvFields: [{name: Testing_lab_ID}]
-
     - name: reporting_facility_clia
       csvFields: [{name: Testing_lab_ID}]
 
@@ -339,6 +382,11 @@ elements:
       csvFields: [{name: Specimen_type_free_text}]
       documentation: This field is ignored.
 
+    - name: Specimen_type_description_Ignore
+      type: TEXT
+      csvFields: [{name: Specimen_type_description}]
+      documentation: This field is ignored.
+
     - name: Specimen_source_site_descrip_Ignore
       type: TEXT
       csvFields: [{name: Specimen_source_site_descrip}]
@@ -359,6 +407,11 @@ elements:
       csvFields: [{name: Test_date}]
       documentation: This field is ignored.
 
+    - name: Testing_lab_accession_number_Ignore
+      type: TEXT
+      csvFields: [{name: Testing_lab_accession_number}]
+      documentation: This field is ignored.
+
     - name: Testing_lab_specimen_ID_Ignore
       type: TEXT
       csvFields: [{name: Testing_lab_specimen_ID}]
@@ -368,11 +421,6 @@ elements:
       type: TEXT
       csvFields: [{name: Test_performed_number}]
       documentation: This field is ignored unless there is an antibody test.  Then this must be set in the Child Schema.
-
-    - name: Test_performed_description_Ignore
-      type: TEXT
-      csvFields: [{name: Test_performed_description}]
-      documentation: This field is ignored.
 
     - name: Test_result_free_text_Ignore
       type: TEXT
