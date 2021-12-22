@@ -302,6 +302,17 @@
       schemaName: non-standard/all-in-one-health-ca-covid-19
       format: CSV
 
+- name: ManualUpload
+  description: Sender for Manual Upload of the RS Standard CSV File
+  jurisdiction: FEDERAL
+  senders:
+    - name: default
+      organizationName: ManualUpload
+      topic: covid-19
+      customerStatus: active
+      schemaName: upload-covid-19
+      format: CSV
+
 - name: pmg
   description: Premier Medical Group USA
   jurisdiction: FEDERAL
