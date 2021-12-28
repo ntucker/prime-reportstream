@@ -17,9 +17,8 @@ private const val apiPath = "/api/settings"
 
 /**
  * Setting Utilities class.
- * This class contains the CRUD REST Client utilitie functions.
+ * This class contains the CRUD REST Client utility functions.
  */
-
 class SettingsUtilities {
 
     companion object {

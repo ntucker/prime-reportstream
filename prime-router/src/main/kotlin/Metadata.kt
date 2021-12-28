@@ -191,7 +191,7 @@ class Metadata : Logging {
                 ?.let { fixupElement(element, it) }
                 ?: fixupElement(element)
         }
-        // Extend the schema if there is a extend element
+        // Extend the schema if there is an 'extend' element
         extendsSchema?.let {
             val extendElements = it.elements.mapNotNull { element ->
                 if (schema.containsElement(element.name)) null else fixupElement(element)
