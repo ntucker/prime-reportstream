@@ -2,6 +2,19 @@ import { AuthState } from "@okta/okta-auth-js";
 
 import { PERMISSIONS } from "./resources/PermissionsResource";
 
+function useQuery(): { readonly [key: string]: string } {
+    const query = window.location.search.slice(1);
+    const queryMap = {};
+    Object.assign(
+        queryMap,
+        ...query
+            .split(",")
+            .map((s) => s.split("="))
+            .map(([k, v]) => ({ [k]: v }))
+    );
+    return queryMap;
+}
+
 const groupToOrg = (group: String | undefined): string => {
     // in order to replace all instances of the underscore we needed to use a
     // global regex instead of a string. a string pattern only replaces the first
@@ -74,4 +87,5 @@ export {
     permissionCheck,
     reportReceiver,
     senderClient,
+    useQuery
 };

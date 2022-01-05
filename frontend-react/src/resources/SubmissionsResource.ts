@@ -3,6 +3,7 @@ import AuthResource from "./AuthResource";
 export default class SubmissionsResource extends AuthResource {
     readonly organization: string | undefined = "";
     readonly id: string | undefined;
+    readonly taskId: number = 0;
     readonly createdAt: Date | undefined;
     readonly reportItemCount: number = 0;
     readonly warningCount: number = 0;
@@ -25,5 +26,9 @@ export default class SubmissionsResource extends AuthResource {
 
     static listUrl(searchParams: { organization: string }): string {
         return `${process.env.REACT_APP_BACKEND_URL}/api/history/${searchParams.organization}/submissions`;
+    }
+
+    static detailUrl(searchParams: { organization: string, taskId: string }): string {
+        return `${process.env.REACT_APP_BACKEND_URL}/api/history/${searchParams.organization}/submissions/${searchParams.taskId}`;
     }
 }

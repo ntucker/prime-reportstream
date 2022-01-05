@@ -9,19 +9,7 @@ import { ErrorPage } from "../error/ErrorPage";
 import Summary from "./Summary";
 import ReportDetails from "./ReportDetails";
 import FacilitiesTable from "./FacilitiesTable";
-
-function useQuery(): { readonly [key: string]: string } {
-    const query = window.location.search.slice(1);
-    const queryMap = {};
-    Object.assign(
-        queryMap,
-        ...query
-            .split(",")
-            .map((s) => s.split("="))
-            .map(([k, v]) => ({ [k]: v }))
-    );
-    return queryMap;
-}
+import { useQuery } from "../../webreceiver-utils";
 
 const DetailsContent = () => {
     const queryMap = useQuery();

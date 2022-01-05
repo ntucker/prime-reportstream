@@ -4,6 +4,7 @@ import { useResource } from "rest-hooks";
 
 import SubmissionsResource from "../../resources/SubmissionsResource";
 import { GlobalContext } from "../../components/GlobalContextProvider";
+import { Link } from "@trussworks/react-uswds";
 
 function SubmissionsTable() {
     // this component will refresh when global context changes (e.g. organization changes)
@@ -34,10 +35,13 @@ function SubmissionsTable() {
                             return (
                                 <tr key={"submission_" + i}>
                                     <th scope="row">
+
+                                    <Link href={`/submission-details?taskId=${s.taskId}`}>
                                         {moment
                                             .utc(s["createdAt"])
                                             .local()
                                             .format("YYYY-MM-DD HH:mm")}
+                                    </Link>
                                     </th>
                                     <th scope="row"> </th>
                                     {/* File name */}

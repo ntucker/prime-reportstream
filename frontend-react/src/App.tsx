@@ -27,6 +27,7 @@ import { logout } from "./utils/UserUtils";
 import TermsOfServiceForm from "./pages/tos-sign/TermsOfServiceForm";
 import Spinner from "./components/Spinner";
 import Submissions from "./pages/submissions/Submissions";
+import SubmissionsDetail from "./pages/submissions/SubmissionsDetail";
 
 const OKTA_AUTH = new OktaAuth(oktaAuthConfig);
 
@@ -136,6 +137,10 @@ const App = () => {
                                     <SecureRoute
                                         path="/report-details"
                                         component={Details}
+                                    />
+                                    <SecureRoute
+                                        path="/submission-details"
+                                        component={SubmissionsDetail}
                                     />
                                     {/* Handles any undefined route */}
                                     <Route
