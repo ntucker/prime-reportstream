@@ -18,6 +18,12 @@ interface SubmissionAccess {
         limit: Int = 10,
         klass: Class<T>
     ): List<T>
+
+    fun <T> fetchActionByActionId(
+        sendingOrg: String,
+        actionId: Long,
+        klass: Class<T>
+    ): T
 }
 /**
  * Class to access lookup tables stored in the database.
@@ -57,5 +63,21 @@ class DatabaseSubmissionsAccess(private val db: DatabaseAccess = DatabaseAccess(
         }
 
         return results
+    }
+
+    override fun <T> fetchActionByActionId(
+        sendingOrg: String,
+        actionId: Long,
+        klass: Class<T>
+    ): T {
+        var results: List<T> = emptyList()
+        db.transact { txn ->
+            val query = DSL.using(txn)
+                .selectFrom(ACTION)
+                .where(ACTION.SENDING_ORG.eq(sendingOrg).and(ACTION.ACTION_ID.eq(actionId)))
+            results = query.fetchInto(klass)
+        }
+
+        return results[0]
     }
 }

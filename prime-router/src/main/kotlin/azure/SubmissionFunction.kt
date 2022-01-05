@@ -87,6 +87,32 @@ class SubmissionFunction(
     }
 
     /**
+     * This endpoint is meant for use by either an Admin or a User.
+     * It does not assume the user belongs to a single Organization.  Rather, it uses
+     * the organization in the URL path, after first confirming authorization to access that organization.
+     */
+    @FunctionName("getOrgSubmissionById")
+    fun organizationSubmissionById(
+        @HttpTrigger(
+            name = "getOrgSubmissionById",
+            methods = [HttpMethod.GET],
+            authLevel = AuthorizationLevel.ANONYMOUS,
+            route = "history/{organization}/submissions/{taskId}"
+        ) request: HttpRequestMessage<String?>,
+        @BindingName("organization") organization: String,
+        @BindingName("taskId") taskId: String
+    ): HttpResponseMessage {
+        return oktaAuthentication.checkAccess(request, organization, true) {
+            try {
+                val submission = facade.findSubmissionByTaskIdAsJson(organization, taskId.toLong())
+                HttpUtilities.okResponse(request, submission)
+            } catch (e: IllegalArgumentException) {
+                HttpUtilities.badRequestResponse(request, e.message ?: "Invalid Request")
+            }
+        }
+    }
+
+    /**
      * An Azure Function that is triggered at the `/api/submissions/` endpoint
      * This endpoint is meant for use by a User.  It assumes the user belongs to a single Organization.
      * DO NOT USE - DEPRECATED - DELETE THIS

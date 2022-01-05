@@ -45,6 +45,14 @@ class SubmissionsFacade(
         return mapper.writeValueAsString(result)
     }
 
+    fun findSubmissionByTaskIdAsJson(
+        organizationName: String,
+        taskId: Long
+    ): String {
+        val result = findSubmissionByTaskId(organizationName, taskId)
+        return mapper.writeValueAsString(result)
+    }
+
     private fun findSubmissions(
         organizationName: String,
         sortOrder: String,
@@ -88,6 +96,20 @@ class SubmissionsFacade(
             SubmissionHistory::class.java
         )
         return submissions
+    }
+
+    private fun findSubmissionByTaskId(
+        organizationName: String,
+        actionId: Long
+    ): SubmissionHistory {
+        require(organizationName.isNotBlank()) {
+            "Invalid organization."
+        }
+        require(actionId > 0) {
+            "Invalid actionId"
+        }
+
+        return db.fetchActionByActionId(organizationName, actionId, SubmissionHistory::class.java)
     }
 
     companion object {
