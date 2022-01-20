@@ -25,6 +25,7 @@ import gov.cdc.prime.router.Schema
 import gov.cdc.prime.router.Sender
 import gov.cdc.prime.router.SettingsProvider
 import gov.cdc.prime.router.Source
+import gov.cdc.prime.router.USTimeZone
 import gov.cdc.prime.router.ValueSet
 import gov.cdc.prime.router.metadata.LookupTable
 import org.apache.logging.log4j.kotlin.Logging
@@ -418,6 +419,7 @@ class Hl7Serializer(
         val suppressAoe = hl7Config?.suppressAoe ?: false
         val useOrderingFacilityName = hl7Config?.useOrderingFacilityName
             ?: Hl7Configuration.OrderingFacilityName.STANDARD
+        val localTimeZone = report.destination?.receiverTimeZone ?: USTimeZone.UTC
 
         // and we have some fields to suppress
         val suppressedFields = hl7Config
@@ -860,6 +862,7 @@ class Hl7Serializer(
         val phoneNumberFormatting = hl7Config?.phoneNumberFormatting
             ?: Hl7Configuration.PhoneNumberFormatting.STANDARD
         val pathSpec = formPathSpec(hl7Field, repeat)
+        val receiverTimeZone = report.destination?.receiverTimeZone ?: USTimeZone.UTC
 
         // All components should be trimmed and not blank.
         val trimmedValue = value.trim()
@@ -878,7 +881,8 @@ class Hl7Serializer(
                 value,
                 pathSpec,
                 hl7Field,
-                hl7Config
+                hl7Config,
+                receiverTimeZone
             )
             else -> {
                 val truncatedValue = trimAndTruncateValue(value, hl7Field, hl7Config, terser)
@@ -892,10 +896,18 @@ class Hl7Serializer(
         value: String,
         pathSpec: String,
         hl7Field: String,
-        hl7Config: Hl7Configuration?
+        hl7Config: Hl7Configuration?,
+        receiverTimeZone: USTimeZone? = null
     ) {
         // first allow the truncation to happen, so we carry that logic on down
-        val truncatedValue = trimAndTruncateValue(value, hl7Field, hl7Config, terser)
+        val truncatedValue = trimAndTruncateValue(value, hl7Field, hl7Config, terser).let {
+            // todo: add in logic to convert UTC to date time
+            if (hl7Config?.convertUtcToLocalDateTime == true && receiverTimeZone != null) {
+                it
+            } else {
+                it
+            }
+        }
         // if we need to convert the offset do it now
         if (hl7Config?.convertPositiveDateTimeOffsetToNegative == true) {
             // we need to convert the offset on date and date time to a negative offset if

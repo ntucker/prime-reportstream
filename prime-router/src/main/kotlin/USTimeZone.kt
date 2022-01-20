@@ -12,4 +12,5 @@ enum class USTimeZone(val zoneId: String) {
     INDIANA_STARKE("US/Indiana-Starke"),
     MICHIGAN("US/Michigan"),
     CHAMORRO("Pacific/Guam"),
+    UTC("UTC")
 }

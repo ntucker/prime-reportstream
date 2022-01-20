@@ -99,6 +99,7 @@ data class Hl7Configuration
     override val nameFormat: String = "standard",
     override val receivingOrganization: String?,
     val convertPositiveDateTimeOffsetToNegative: Boolean? = false,
+    val convertUtcToLocalDateTime: Boolean? = false
 ) : TranslatorConfiguration("HL7") {
     /**
      * Formatting for XTN fields

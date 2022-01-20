@@ -43,6 +43,7 @@ open class Receiver(
     val description: String = "",
     val transport: TransportType? = null,
     val externalName: String? = null,
+    val receiverTimeZone: USTimeZone? = null
 ) {
     // Custom constructor
     constructor(
