@@ -1,0 +1,35 @@
+name: Release to Azure
+
+on:
+  push:
+    branches:
+      - josiahsiegel/azviz-generator
+
+jobs:
+  generate-viz:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set environment variables
+        shell: bash
+        run: |
+          echo "RESOURCE_GROUP=prime-data-hub-prod" >> $GITHUB_ENV
+          echo "FUNCTION_APP=pdhprod-functionapp" >> $GITHUB_ENV
+          echo "SUB_NAME=OCIO-DMZ-C1" >> $GITHUB_ENV
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.SERVICE_PRINCIPAL_CREDS }} 
+          enable-AzPSSession: true
+      - uses: JosiahSiegel/AzViz-action@v1.0.3
+        with:
+          resource-group: ${{ env.RESOURCE_GROUP }}
+          out-file: output/viz.svg
+          sub-name: ${{ env.SUB_NAME }}
+          format: svg
+          depth: 2
+          verbosity: 2
+          exclude-types: '*insights*, *dns*, *privatelink*. *ssh*'
+      - uses: actions/upload-artifact@v2
+        with:
+          name: viz
+          path: output/*
