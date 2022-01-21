@@ -28,6 +28,12 @@ class DirectSendCommand : CliktCommand(
         help = "Receiver in local settings. Must be a AS2 transport"
     ).required()
 
+    private val reportIdOption by option(
+        "--report-reportId",
+        metavar = "<uuid>",
+        help = "Report id to use."
+    )
+
     private val verbose by option(
         "-v", "--verbose",
         help = "Verbose logging of each HTTP operation to the console"
@@ -60,7 +66,8 @@ class DirectSendCommand : CliktCommand(
     private fun sendViaAs2(as2Info: AS2TransportType) {
         val transport = AS2Transport()
         val credentials = transport.lookupCredentials(receiverNameOption)
-        transport.sendViaAS2(as2Info, credentials, receiverNameOption, UUID.randomUUID(), inputFile.readBytes())
+        val reportId = reportIdOption?.let { UUID.fromString(it) } ?: UUID.randomUUID()
+        transport.sendViaAS2(as2Info, credentials, inputFile.name, reportId, inputFile.readBytes())
     }
 
     /**
