@@ -747,13 +747,16 @@
   description: Ohio Department of Health
   jurisdiction: STATE
   stateCode: OH
+  filters:
+    - topic: "covid-19"
+      jurisdictionalFilter:
+        - "orEquals(ordering_facility_state, OH, patient_state, OH)"
   receivers:
     - name: elr
       organizationName: oh-doh
       topic: covid-19
       customerStatus: active
-      jurisdictionalFilter:
-        - matches(ordering_facility_state, OH)
+      jurisdictionalFilter: []
       translation:
         type: HL7
         useBatchHeaders: true
@@ -768,6 +771,7 @@
         suppressHl7Fields: OBX-23-11
         # turn off UNK and ASKU for this field
         useBlankInsteadOfUnknown: patient_race
+        convertPositiveDateTimeOffsetToNegative: true
       timing:
         operation: MERGE
         numberPerDay: 1440 # Every minute
@@ -2478,19 +2482,23 @@
   description: Illinois Public Health Department
   jurisdiction: STATE
   stateCode: IL
+  filters:
+    - topic: "covid-19"
+      jurisdictionalFilter:
+        - "orEquals(ordering_facility_state, IL, patient_state, IL)"
   receivers:
     - name: elr
       organizationName: il-phd
       topic: covid-19
       customerStatus: active
-      jurisdictionalFilter:
-        - orEquals(ordering_facility_state, IL, patient_state, IL)
+      jurisdictionalFilter: []
       translation:
         type: HL7
         useBatchHeaders: true
         suppressNonNPI: true
         truncateHDNamespaceIds: true
         truncateHl7Fields: OBX-23-1
+        convertPositiveDateTimeOffsetToNegative: true
       timing:
         operation: MERGE
         numberPerDay: 1440 # Every minute
