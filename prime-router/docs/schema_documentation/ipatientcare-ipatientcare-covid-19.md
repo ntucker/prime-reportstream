@@ -1308,7 +1308,7 @@ Fac_Zip populates multiple fields.  This instance populates testing_lab_zip_code
 
 **PII**: No
 
-**Cardinality**: [0..1]
+**Cardinality**: [1..1]
 
 
 **Reference URL**:
@@ -1418,7 +1418,7 @@ iPatientCare is an ambulatory EMR, so this field is defaulted to 'N'.
 
 **PII**: No
 
-**Default Value**: CE
+**Default Value**: CWE
 
 **Cardinality**: [0..1]
 

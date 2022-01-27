@@ -122,7 +122,7 @@ elements:
       default: F
 
     - name: result_format
-      default: CE
+      default: CWE
 
 
 
@@ -254,9 +254,8 @@ elements:
 
 #this lookup is in the covid-19 schema, but doesn't appear to execute??
     - name: equipment_model_name
-      table: LIVD-SARS-CoV-2
-      tableColumn: Model
-      mapper: livdLookup()
+      cardinality: ONE 
+      mapperOverridesValue: true
 
 
 #unused fields - these are added here to suppress warnings.

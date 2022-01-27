@@ -21,6 +21,8 @@ elements:
       csvFields: [{name: Accession_no}]
 
     - name: test_kit_name_id
+      cardinality: ONE 
+      mapperOverridesValue: true
       type: CODE
       csvFields: [{name: TestName, format: $alt}]
       altValues:
@@ -28,7 +30,7 @@ elements:
           display: "SARS-CoV-2 (COVID-19) Ag"
         - code: 10811877011290
           display: "     SARS-CoV-2 (COVID-19) Ag"
-          
+
 # Ordering provider
     - name: ordering_provider_id
       type: CODE
