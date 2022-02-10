@@ -23,6 +23,7 @@
         "@types/node": "^15.3.0",
         "@types/react": "^17.0.38",
         "@types/react-dom": "^17.0.5",
+        "axios": "^0.25.0",
         "craco-sass-resources-loader": "^1.1.0",
         "dompurify": "^2.3.4",
         "downloadjs": "^1.4.7",
@@ -145,7 +146,7 @@
         "yaml-loader": "^0.6.0"
     },
     "peerDependencies": {
-      "postcss": "^8.4.5"
+        "postcss": "^8.4.5"
     },
     "resolutions": {
         "react-scripts/**/node-forge": "^1.0.0",
