@@ -4,12 +4,13 @@ import { useOktaAuth } from "@okta/okta-react";
 
 import ReportResource from "../../../resources/ReportResource";
 import { getStoredOrg } from "../../../components/GlobalContextProvider";
+import { Report } from "../../../network/HistoryApi";
 
 interface Props {
     /* REQUIRED
     A ReportResource is passed in using this property. This is necessary for download()
     since that function relies on the content, fileName, and mimeType properties */
-    report: ReportResource | undefined;
+    report: ReportResource | Report | undefined;
 
     /* OPTIONAL
     This boolean flag changes the return value from a standard <a> link to a <Button> (USWDS)

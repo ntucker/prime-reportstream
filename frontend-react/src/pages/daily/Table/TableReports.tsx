@@ -6,6 +6,8 @@ import ReportResource from "../../../resources/ReportResource";
 
 import TableButtonGroup from "./TableButtonGroup";
 import TableReportsData from "./TableReportsData";
+import { HistoryApi, Report } from "../../../network/HistoryApi";
+import { useNetwork } from "../../../network/NetworkHooks";
 
 /* 
     This is the main exported component from this file. It provides container styling,
@@ -13,9 +15,12 @@ import TableReportsData from "./TableReportsData";
     component.
 */
 function TableReports({ sortBy }: { sortBy?: string }) {
-    const reports: ReportResource[] = useResource(ReportResource.list(), {
-        sortBy,
-    });
+    // const reports: ReportResource[] = useResource(ReportResource.list(), {
+    //     sortBy,
+    // });
+
+    /* This is a great way to keep our hook functionality */
+    const reports: Report[] = useNetwork(HistoryApi.list()) 
     const receiverSVCs: string[] = Array.from(getUniqueReceiverSvc(reports));
     const [chosen, setChosen] = useState(receiverSVCs[0]);
 

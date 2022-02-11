@@ -1,69 +1,62 @@
 import axios from 'axios'
 import { getStoredOktaToken, getStoredOrg } from '../components/GlobalContextProvider';
+import { BasicApi, Endpoint } from './BasicApi';
 
-export type Report = {
-    sent: number,
-    via: string,
-    total: number,
-    fileType: string,
-    type: string,
-    reportId: string,
-    expires: number,
-    sendingOrg: string,
-    receivingOrg: string,
-    receivingOrgSvc: string,
-    facilities: string[],
-    actions: Action[],
-    displayName: string,
-    content: string,
-    fieldName: string,
-    mimeType: string
+/* 
+    Using classes allows us to keep some easy defaults when constructing
+    an object from a JSON response. This is meant to mimic the behavior of
+    rest-hooks defaults.
+*/
+export class Report {
+    sent: number = -1
+    via: string = ""
+    total: number = -1
+    fileType: string = ""
+    type: string = ""
+    reportId: string = ""
+    expires: number = -1
+    sendingOrg: string = ""
+    receivingOrg: string = ""
+    receivingOrgSvc: string = ""
+    facilities: string[] = []
+    actions: Action[] = []
+    displayName: string = ""
+    content: string = ""
+    fieldName: string = ""
+    mimeType: string = ""
 }
 
-export type Action = {
-    date: string,
-    user: string,
+export class Action {
+    date: string = ""
+    user: string = ""
     action: string | undefined
 }
 
-/* 
-    Enumerated endpoints keeps things tidy in each API interface we build
-*/
-enum Endpoint {
-    REPORTS = '/api/history/report'
+/* Enumerated endpoints keeps things tidy in each API interface we build */
+enum HistoryEndpoints {
+    REPORT_BASE = '/api/history/report',
 }
 
-/* 
-    Keeping these out of component code, as well, keeps things
-    pretty clean. Happy devs, happy Kev!
-*/
-const accessToken = getStoredOktaToken();
-const organization = getStoredOrg();
+export class HistoryApi extends BasicApi {
 
-/* 
-    The general idea is an instance per API since headers may vary.
-    
-    We could also set baseURL and response type globally? Though,
-    we have to consider all CRUD operations; do we ever get anything
-    but JSON back? A file, maybe?
-*/
-const historyApi = axios.create({
-    baseURL: `${process.env.REACT_APP_BACKEND_URL}`,
-    headers: {
-        Authorization: `Bearer ${accessToken}`,
-        Organization: organization,
-    },
-    responseType: 'json',
-})
+    /*
+        TODO: How can we make this private static AND enforce it when
+        extending BasicApi? 
+    */
+    generateEndpoint(urlParam: string): Endpoint {
+        return {
+            url: urlParam,
+            api: HistoryApi
+        }
+    }
 
-/* 
-    Gets list of reports for the organization designated in the
-    `historyApi` headers.
+    static list = (): Endpoint => {
+        return new HistoryApi().generateEndpoint(HistoryEndpoints.REPORT_BASE)
+    }
 
-    @returns Report[]
-*/
-const getReports = async () => {
-    const response = await historyApi.get<Report[]>(Endpoint.REPORTS)
-    const reports = response.data
-    return reports
+    static detail = (reportId: string): Endpoint => {
+        return new HistoryApi().generateEndpoint(`${HistoryEndpoints.REPORT_BASE}/${reportId}`)
+    }
+
 }
+
