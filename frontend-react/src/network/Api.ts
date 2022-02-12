@@ -15,12 +15,6 @@ export abstract class Api {
     static accessToken: string = getStoredOktaToken();
     static organization: string = getStoredOrg();
     static baseUrl: string = "/api";
-    static options = {
-        headers: {
-            Authorization: `Bearer ${this.accessToken}`,
-            Organization: this.organization,
-        },
-    };
 
     /*
         The general idea is an instance per API since headers may vary.

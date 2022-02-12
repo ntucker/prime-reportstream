@@ -35,13 +35,13 @@ export class HistoryApi extends Api {
     static baseUrl: string = "/api/history/report";
 
     static list = (): Endpoint => {
-        return HistoryApi.generateEndpoint(this.baseUrl, HistoryApi);
+        return HistoryApi.generateEndpoint(this.baseUrl, this);
     };
 
     static detail = (reportId: string): Endpoint => {
         return HistoryApi.generateEndpoint(
             `${this.baseUrl}/${reportId}`,
-            HistoryApi
+            this
         );
     };
 }
