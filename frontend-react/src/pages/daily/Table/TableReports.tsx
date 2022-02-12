@@ -20,7 +20,7 @@ function TableReports({ sortBy }: { sortBy?: string }) {
     // });
 
     /* This is a great way to keep our hook functionality */
-    const reports: Report[] = useNetwork(HistoryApi.list()) 
+    const reports = useNetwork<Report[]>(HistoryApi.list());
     const receiverSVCs: string[] = Array.from(getUniqueReceiverSvc(reports));
     const [chosen, setChosen] = useState(receiverSVCs[0]);
 

@@ -1,19 +1,25 @@
 import { useState, useEffect } from "react";
-import { Endpoint } from "./BasicApi";
-import { Report } from "./HistoryApi";
+import { Api } from "./Api";
 
-interface NetworkHookProps {
-    endpoint: Endpoint
+export interface Endpoint {
+    url: string;
+    api: typeof Api;
 }
 
-export const useNetwork = (endpoint: Endpoint): any[] => {
-    /* TODO: How can we do this all with generics? */
-    const [data, setData] = useState<Report[]>()
+export function useNetwork<T>(endpoint: Endpoint): T {
+    const [data, setData] = useState<T>();
 
+    /* BUG: Why won't this hook run? */
     useEffect(() => {
         /* Fetch data and handle any parsing needed */
-    }, [])
+        endpoint.api
+            .instance(endpoint.url)
+            .then((res) => console.log(res))
+            .catch((err) => {
+                throw Error(err);
+            });
+    }, []);
 
-    if (!data) return []
-    return data
+    if (!data) throw Error("Error fetching data! Uh oh.");
+    return data;
 }
