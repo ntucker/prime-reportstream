@@ -1,7 +1,7 @@
 import moment from "moment";
 import { NavLink } from "react-router-dom";
-import { Report } from "../../../network/HistoryApi";
 
+import { Report } from "../../../network/HistoryApi";
 import ReportResource from "../../../resources/ReportResource";
 
 import ReportLink from "./ReportLink";

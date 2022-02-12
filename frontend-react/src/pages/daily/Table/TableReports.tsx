@@ -3,11 +3,11 @@ import { SetStateAction, useState } from "react";
 
 import { getUniqueReceiverSvc } from "../../../utils/ReportUtils";
 import ReportResource from "../../../resources/ReportResource";
+import { HistoryApi, Report } from "../../../network/HistoryApi";
+import { useNetwork } from "../../../network/NetworkHooks";
 
 import TableButtonGroup from "./TableButtonGroup";
 import TableReportsData from "./TableReportsData";
-import { HistoryApi, Report } from "../../../network/HistoryApi";
-import { useNetwork } from "../../../network/NetworkHooks";
 
 /* 
     This is the main exported component from this file. It provides container styling,

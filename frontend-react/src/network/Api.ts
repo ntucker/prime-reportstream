@@ -1,8 +1,10 @@
 import axios, { AxiosInstance } from "axios";
+
 import {
     getStoredOktaToken,
     getStoredOrg,
 } from "../components/GlobalContextProvider";
+
 import { Endpoint } from "./NetworkHooks";
 
 export abstract class Api {
