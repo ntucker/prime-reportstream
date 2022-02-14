@@ -2,7 +2,6 @@ import moment from "moment";
 import { NavLink } from "react-router-dom";
 
 import { Report } from "../../../network/HistoryApi";
-import ReportResource from "../../../resources/ReportResource";
 
 import ReportLink from "./ReportLink";
 
@@ -10,7 +9,7 @@ interface Props {
     /* REQUIRED
     To populate the <TableReports> component with data, you must pass in an array of
     ReportResource items to be mapped with the TableReportsData (this) component. */
-    reports: Report[];
+    reports: Report[] | undefined;
 }
 
 /* 
@@ -20,7 +19,7 @@ interface Props {
 function TableReportsData(props: Props) {
     return (
         <tbody id="tBody" className="font-mono-2xs">
-            {props.reports.map((report, idx) => (
+            {props.reports?.map((report, idx) => (
                 <tr key={idx}>
                     <th scope="row">
                         <NavLink

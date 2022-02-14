@@ -1,10 +1,9 @@
-import { useResource } from "rest-hooks";
 import { SetStateAction, useState } from "react";
 
 import { getUniqueReceiverSvc } from "../../../utils/ReportUtils";
-import ReportResource from "../../../resources/ReportResource";
 import { HistoryApi, Report } from "../../../network/HistoryApi";
 import { useNetwork } from "../../../network/NetworkHooks";
+import Spinner from "../../../components/Spinner";
 
 import TableButtonGroup from "./TableButtonGroup";
 import TableReportsData from "./TableReportsData";
@@ -20,7 +19,7 @@ function TableReports({ sortBy }: { sortBy?: string }) {
     // });
 
     /* This is a great way to keep our hook functionality */
-    const reports = useNetwork<Report[]>(HistoryApi.list());
+    const { loading, data: reports } = useNetwork<Report[]>(HistoryApi.list());
     const receiverSVCs: string[] = Array.from(getUniqueReceiverSvc(reports));
     const [chosen, setChosen] = useState(receiverSVCs[0]);
 
@@ -29,6 +28,7 @@ function TableReports({ sortBy }: { sortBy?: string }) {
         setChosen(chosen);
     };
 
+    if (loading) return <Spinner />;
     return (
         <section className="grid-container margin-top-5">
             <div className="grid-col-12">
@@ -56,12 +56,12 @@ function TableReports({ sortBy }: { sortBy?: string }) {
                         </tr>
                     </thead>
                     <TableReportsData
-                        reports={reports.filter(
+                        reports={reports?.filter(
                             (report) => report.receivingOrgSvc === chosen
                         )}
                     />
                 </table>
-                {reports.filter((report) => report.receivingOrgSvc === chosen)
+                {reports?.filter((report) => report.receivingOrgSvc === chosen)
                     .length === 0 ? (
                     <p>No results</p>
                 ) : null}

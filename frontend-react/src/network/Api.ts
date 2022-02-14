@@ -33,9 +33,9 @@ export abstract class Api {
         Super convenient way to generate an Endpoint in child classes!
         ChildClass.generateEndpoint(this.baseUrl, this)
     */
-    static generateEndpoint(urlParam: string, api: typeof Api): Endpoint {
+    static generateEndpoint(url: string, api: typeof Api): Endpoint {
         return {
-            url: urlParam,
+            url: url,
             api: api,
         };
     }

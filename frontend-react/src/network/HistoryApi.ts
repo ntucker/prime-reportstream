@@ -39,9 +39,6 @@ export class HistoryApi extends Api {
     };
 
     static detail = (reportId: string): Endpoint => {
-        return HistoryApi.generateEndpoint(
-            `${this.baseUrl}/${reportId}`,
-            this
-        );
+        return HistoryApi.generateEndpoint(`${this.baseUrl}/${reportId}`, this);
     };
 }
