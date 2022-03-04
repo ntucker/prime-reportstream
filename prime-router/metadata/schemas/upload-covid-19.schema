@@ -31,6 +31,14 @@ elements:
           display: "P"
 
 
+    - name: sender_id_all
+      default: "all"
+      documentation: This is the sender_id value used in "all" sender_valuesets lookups
+      type: TABLE
+      table: sender_valuesets
+      tableColumn: sender_id
+
+
 ############### Set the major ID fields
     - name: patient_id
       csvFields: [{name: patient_id}]
@@ -109,12 +117,29 @@ elements:
       cardinality: ONE 
       csvFields: [{name: patient_dob}]
 
+    - name: patient_gender_fromCSV
+      csvFields: [{name: patient_gender}]
+      type: TABLE
+      table: sender_valuesets
+      tableColumn: free_text_substring
+
     - name: patient_gender
       cardinality: ONE 
-      type: CODE
-      valueSet: sender-automation/gender
-      documentation: Translate multiple inbound Gender values to RS values
-      csvFields: [{ name: patient_gender, format: $display}]
+      default: ""
+# Adding the csvFields means if no lookup value is found, use the value in this CSV field.
+#      csvFields: [{ name: patient_gender, format: $display}]
+      type: TABLE
+      table: sender_valuesets
+      tableColumn: result
+      mapper: lookup(sender_id_all, patient_gender_fromCSV)
+      mapperOverridesValue: true
+
+#    - name: patient_gender
+#      cardinality: ONE 
+#      type: CODE
+#      valueSet: sender-automation/gender
+#      documentation: Translate multiple inbound Gender values to RS values
+#      csvFields: [{ name: patient_gender, format: $display}]
 
     - name: patient_ethnicity
       type: CODE
