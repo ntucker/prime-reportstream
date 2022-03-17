@@ -152,11 +152,13 @@
     },
     "peerDependencies": {
         "follow-redirects": "^1.14.8",
-        "postcss": "^8.4.5"
+        "postcss": "^8.4.5",
+        "webpack-dev-server": "^3.11.3"
     },
     "resolutions": {
         "react-scripts/**/node-forge": "^1.0.0",
         "react-scripts/**/url-parse": "^1.5.6",
-        "react-scripts/**/follow-redirects": "^1.14.8"
+        "react-scripts/**/follow-redirects": "^1.14.8",
+        "react-scripts/**/ansi-html": "^0.0.8"
     }
 }
