@@ -3508,3 +3508,19 @@
       schemaName: "upload-covid-19"
       keys: null
       processingType: "sync"
+
+- name: "mpbiomedicals"
+  description: "MP Biomedicals - CSV for OTC Results"
+  jurisdiction: "FEDERAL"
+  stateCode: null
+  countyName: null
+  filters: []
+  senders:
+    - name: "default"
+      organizationName: "mpbiomedicals"
+      format: "CSV"
+      topic: "covid-19"
+      customerStatus: "testing"
+      schemaName: "csv-otc-covid-19"
+      keys: null
+      processingType: "sync"
