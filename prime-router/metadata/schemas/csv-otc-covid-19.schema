@@ -156,7 +156,6 @@ elements:
 
     - name: patient_dob
       type: DATE
-      cardinality: ONE 
       csvFields: [{name: patient_dob}]
 
     - name: patient_gender
@@ -175,12 +174,6 @@ elements:
       valueSet: sender-automation/race
       documentation: Translate multiple inbound Race values to RS / OMB values
       csvFields: [{ name: patient_race, format: $display}]
-
-    - name: patient_preferred_language
-      type: CODE
-      valueSet: sender-automation/patient_preferred_language
-      documentation: Translate multiple inbound Language values to the ISO-639 codes
-      csvFields: [{name: patient_preferred_language, format: $display}]
 
     - name: patient_email
       csvFields: [{name: patient_email }]
@@ -464,3 +457,9 @@ elements:
       documentation: Translate multiple inbound Y/N/U AOE values to RS values
       csvFields: [{ name: symptomatic_for_disease, format: $display}]
       default: ""
+
+    - name: illness_onset_date
+      type: DATE
+      default: ""
+      csvFields: [{name: illness_onset_date, format: "yyyyMMdd"}]
+      nullifyValue: true
