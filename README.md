@@ -4,7 +4,7 @@
 
 ## Overview
 
-The PRIME ReportStream project is the part of the Pandemic Ready Interoperable Modernization Effort that works with state and local public health departments. The project is a joint effort between the CDC and USDS. Currently, we are focusing on the problem of delivering COVID-19 test data to public health departments. Later, we will work on other tools to analyze and explore this data and different types of health data. See the PRIME ReportStream website (https://reportstream.cdc.gov) for further details. 
+The PRIME ReportStream project (https://reportstream.cdc.gov) is the part of the Pandemic Ready Interoperable Modernization Effort that works on infrastructure for the public health data ecosystem. The project is a multi-year joint effort between the CDC and USDS. Currently, we are focusing on the problem of delivering COVID-19 test data to public health departments. Later, we will work on other data streams. See the PRIME ReportStream website  for further details. 
 
 PRIME ReportStream a sibling project to [PRIME SimpleReport](https://simplereport.gov) which is better way to report COVID-19 rapid tests. 
 
