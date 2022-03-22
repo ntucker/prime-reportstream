@@ -68,7 +68,11 @@ elements:
       mapper: use(filler_order_id)
 
     - name: message_id
-      mapper: use(filler_order_id)
+      mapper: concat(filler_order_id, $index, $currentDate)
+      delimiter: "+"
+
+#    - name: message_id
+#      mapper: use(filler_order_id)
 
     - name: testing_lab_specimen_id
       mapper: use(filler_order_id)
