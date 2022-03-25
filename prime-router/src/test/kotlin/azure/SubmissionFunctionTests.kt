@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.google.common.net.HttpHeaders
 import com.microsoft.azure.functions.HttpStatus
+import com.okta.jwt.Jwt
 import gov.cdc.prime.router.ActionResponse
 import gov.cdc.prime.router.DetailedActionResponse
 import gov.cdc.prime.router.DetailedSubmissionHistory
@@ -16,8 +17,10 @@ import gov.cdc.prime.router.cli.tests.ExpectedSubmissionHistory
 import gov.cdc.prime.router.common.JacksonMapperUtilities
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.spyk
 import org.jooq.exception.DataAccessException
 import org.junit.jupiter.api.TestInstance
+import java.time.Instant
 import java.time.OffsetDateTime
 import kotlin.test.Test
 
@@ -45,6 +48,29 @@ data class DetailSubmissionHistoryResponse(
     val externalName: String? = "",
     val actionResponse: DetailedActionResponse? = null
 )
+
+class TestJwt(tokenValue: String, issuedAt: Instant, expiresAt: Instant, claims: Map<String, Any>) : Jwt {
+    private var tokenValue: String? = tokenValue
+    private var claims: Map<String, Any>? = claims
+    private var issuedAt: Instant? = issuedAt
+    private var expiresAt: Instant? = expiresAt
+
+    override fun getTokenValue(): String? {
+        return tokenValue
+    }
+
+    override fun getIssuedAt(): Instant? {
+        return issuedAt
+    }
+
+    override fun getExpiresAt(): Instant? {
+        return expiresAt
+    }
+
+    override fun getClaims(): Map<String, Any>? {
+        return claims
+    }
+}
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class SubmissionFunctionTests {
@@ -120,97 +146,115 @@ class SubmissionFunctionTests {
 
     @Test
     fun `test list submissions`() {
+        val jwtSpy = mockk<OktaAuthenticationVerifier>()
+
+        val claims = mapOf(
+            "oktaSubjectClaim" to "test",
+            "oktaMembershipClaim" to listOf("DHca-phd")
+        )
+
+        every { jwtSpy["decodeJwt"]("fdafads.ioretghsd.sadfhkb") } returns
+            TestJwt("fdafads.ioretghsd.sadfhkb", Instant.now(), Instant.now().plusSeconds(60), claims)
+
         val testCases = listOf(
+//            SubmissionUnitTestCase(
+//                emptyMap(),
+//                emptyMap(),
+//                ExpectedAPIResponse(
+//                    HttpStatus.UNAUTHORIZED
+//                ),
+//                "unauthorized"
+//            ),
+//            SubmissionUnitTestCase(
+//                mapOf("authorization" to "Bearer fdafads"),
+//                emptyMap(),
+//                ExpectedAPIResponse(
+//                    HttpStatus.OK,
+//                    listOf(
+//                        ExpectedSubmissionHistory(
+//                            taskId = 8,
+//                            createdAt = OffsetDateTime.parse("2021-11-30T16:36:54.919Z"),
+//                            sendingOrg = "simple_report",
+//                            httpStatus = 201,
+//                            externalName = "testname.csv",
+//                            id = ReportId.fromString("a2cf1c46-7689-4819-98de-520b5007e45f"),
+//                            topic = "covid-19",
+//                            reportItemCount = 3,
+//                            warningCount = 3,
+//                            errorCount = 0
+//                        ),
+//                        ExpectedSubmissionHistory(
+//                            taskId = 7,
+//                            createdAt = OffsetDateTime.parse("2021-11-30T16:36:48.307Z"),
+//                            sendingOrg = "simple_report",
+//                            httpStatus = 400,
+//                            id = null,
+//                            topic = null,
+//                            reportItemCount = null,
+//                            warningCount = 1,
+//                            errorCount = 1
+//                        )
+//                    )
+//                ),
+//                "simple success"
+//            ),
+//            SubmissionUnitTestCase(
+//                mapOf("authorization" to "Bearer fdafads"),
+//                mapOf("cursor" to "nonsense"),
+//                ExpectedAPIResponse(
+//                    HttpStatus.BAD_REQUEST
+//                ),
+//                "bad date"
+//            ),
+//            SubmissionUnitTestCase(
+//                mapOf("authorization" to "Bearer fdafads"),
+//                mapOf("pagesize" to "-1"),
+//                ExpectedAPIResponse(
+//                    HttpStatus.BAD_REQUEST
+//                ),
+//                "bad pagesize"
+//            ),
+//            SubmissionUnitTestCase(
+//                mapOf("authorization" to "Bearer fdafads"),
+//                mapOf("pagesize" to "fdas"),
+//                ExpectedAPIResponse(
+//                    HttpStatus.BAD_REQUEST
+//                ),
+//                "bad pagesize, garbage"
+//            ),
+//            SubmissionUnitTestCase(
+//                mapOf("authorization" to "Bearer fdafads"),
+//                mapOf(
+//                    "pagesize" to "10",
+//                    "cursor" to "2021-11-30T16:36:48.307Z",
+//                    "sort" to "ASC"
+//                ),
+//                ExpectedAPIResponse(
+//                    HttpStatus.OK
+//                ),
+//                "good minimum params"
+//            ),
+//            SubmissionUnitTestCase(
+//                mapOf("authorization" to "Bearer fdafads"),
+//                mapOf(
+//                    "pagesize" to "10",
+//                    "cursor" to "2021-11-30T16:36:54.307109Z",
+//                    "endCursor" to "2021-11-30T16:36:53.919104Z",
+//                    "sortCol" to "CREATED_AT",
+//                    "sort" to "ASC"
+//                ),
+//                ExpectedAPIResponse(
+//                    HttpStatus.OK
+//                ),
+//                "good all params"
+//            ),
             SubmissionUnitTestCase(
+                mapOf("authorization" to "Bearer fdafads.ioretghsd.sadfhkb", "authentication-type" to "okta", "localauth" to "true"),
                 emptyMap(),
-                emptyMap(),
-                ExpectedAPIResponse(
-                    HttpStatus.UNAUTHORIZED
-                ),
-                "unauthorized"
-            ),
-            SubmissionUnitTestCase(
-                mapOf("authorization" to "Bearer fdafads"),
-                emptyMap(),
-                ExpectedAPIResponse(
-                    HttpStatus.OK,
-                    listOf(
-                        ExpectedSubmissionHistory(
-                            taskId = 8,
-                            createdAt = OffsetDateTime.parse("2021-11-30T16:36:54.919Z"),
-                            sendingOrg = "simple_report",
-                            httpStatus = 201,
-                            externalName = "testname.csv",
-                            id = ReportId.fromString("a2cf1c46-7689-4819-98de-520b5007e45f"),
-                            topic = "covid-19",
-                            reportItemCount = 3,
-                            warningCount = 3,
-                            errorCount = 0
-                        ),
-                        ExpectedSubmissionHistory(
-                            taskId = 7,
-                            createdAt = OffsetDateTime.parse("2021-11-30T16:36:48.307Z"),
-                            sendingOrg = "simple_report",
-                            httpStatus = 400,
-                            id = null,
-                            topic = null,
-                            reportItemCount = null,
-                            warningCount = 1,
-                            errorCount = 1
-                        )
-                    )
-                ),
-                "simple success"
-            ),
-            SubmissionUnitTestCase(
-                mapOf("authorization" to "Bearer fdafads"),
-                mapOf("cursor" to "nonsense"),
-                ExpectedAPIResponse(
-                    HttpStatus.BAD_REQUEST
-                ),
-                "bad date"
-            ),
-            SubmissionUnitTestCase(
-                mapOf("authorization" to "Bearer fdafads"),
-                mapOf("pagesize" to "-1"),
-                ExpectedAPIResponse(
-                    HttpStatus.BAD_REQUEST
-                ),
-                "bad pagesize"
-            ),
-            SubmissionUnitTestCase(
-                mapOf("authorization" to "Bearer fdafads"),
-                mapOf("pagesize" to "fdas"),
-                ExpectedAPIResponse(
-                    HttpStatus.BAD_REQUEST
-                ),
-                "bad pagesize, garbage"
-            ),
-            SubmissionUnitTestCase(
-                mapOf("authorization" to "Bearer fdafads"),
-                mapOf(
-                    "pagesize" to "10",
-                    "cursor" to "2021-11-30T16:36:48.307Z",
-                    "sort" to "ASC"
-                ),
                 ExpectedAPIResponse(
                     HttpStatus.OK
                 ),
-                "good minimum params"
-            ),
-            SubmissionUnitTestCase(
-                mapOf("authorization" to "Bearer fdafads"),
-                mapOf(
-                    "pagesize" to "10",
-                    "cursor" to "2021-11-30T16:36:54.307109Z",
-                    "endCursor" to "2021-11-30T16:36:53.919104Z",
-                    "sortCol" to "CREATED_AT",
-                    "sort" to "ASC"
-                ),
-                ExpectedAPIResponse(
-                    HttpStatus.OK
-                ),
-                "good all params"
+                "authorized okta user"
             )
         )
 

@@ -3,7 +3,7 @@ import { Resource } from "@rest-hooks/rest";
 import {
     getStoredOktaToken,
     getStoredOrg,
-} from "../contexts/SessionStorageTools";
+} from "../components/GlobalContextProvider";
 
 export default class AuthResource extends Resource {
     pk(parent?: any, key?: string): string | undefined {
@@ -19,7 +19,8 @@ export default class AuthResource extends Resource {
             headers: {
                 ...init.headers,
                 Authorization: `Bearer ${accessToken}`,
-                Organization: organization || "",
+                Organization: organization,
+                localauth: "true"
             },
         };
     };

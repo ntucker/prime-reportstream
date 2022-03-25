@@ -1,5 +1,6 @@
 package gov.cdc.prime.router.azure
 
+import com.okta.jwt.Jwt
 import com.okta.jwt.JwtVerifiers
 
 // These constants match how PRIME Okta subscription is configured
@@ -70,10 +71,10 @@ class OktaAuthenticationVerifier : AuthenticationVerifier {
         organizationName: String?,
         oktaSender: Boolean
     ): AuthenticatedClaims? {
-        val jwtVerifier = JwtVerifiers.accessTokenVerifierBuilder()
-            .setIssuer("https://$issuerBaseUrl/oauth2/default")
-            .build()
-        val jwt = jwtVerifier.decode(accessToken)
+//        val jwtVerifier = JwtVerifiers.accessTokenVerifierBuilder()
+//            .setIssuer("https://$issuerBaseUrl/oauth2/default")
+//            .build()
+        val jwt = decodeJwt(accessToken)
 
         val userName = jwt.claims[oktaSubjectClaim]?.toString() ?: return null
         @Suppress("UNCHECKED_CAST")
@@ -81,6 +82,13 @@ class OktaAuthenticationVerifier : AuthenticationVerifier {
 
         if (!checkMembership(memberships, minimumLevel, organizationName, oktaSender)) return null
         return AuthenticatedClaims(userName, minimumLevel, organizationName, jwt.getClaims())
+    }
+
+    fun decodeJwt(accessToken: String): Jwt {
+        val jwtVerifier = JwtVerifiers.accessTokenVerifierBuilder()
+            .setIssuer("https://$issuerBaseUrl/oauth2/default")
+            .build()
+        return jwtVerifier.decode(accessToken)
     }
 
     internal fun checkMembership(
