@@ -1,7 +1,7 @@
 import React, { Suspense } from "react";
 import { Button, GridContainer, Grid } from "@trussworks/react-uswds";
 import { NetworkErrorBoundary, useController } from "rest-hooks";
-import { RouteComponentProps, useHistory } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import { ErrorPage } from "../../pages/error/ErrorPage";
 import OrgSenderSettingsResource from "../../resources/OrgSenderSettingsResource";
@@ -16,10 +16,11 @@ type Props = {
     settingtype: string;
 };
 
-export function NewSetting({ match }: RouteComponentProps<Props>) {
-    const history = useHistory();
-    const orgname = match?.params?.orgname || "";
-    const settingtype = match?.params?.settingtype || "";
+export function NewSetting() {
+    const navigate = useNavigate();
+    const params = useParams<Props>();
+    const orgname = params?.orgname || "";
+    const settingtype = params?.settingtype || "";
 
     const FormComponent = () => {
         let orgSetting: object = [];
@@ -40,7 +41,7 @@ export function NewSetting({ match }: RouteComponentProps<Props>) {
                             "success",
                             `Item '${orgSettingName}' has been created`
                         );
-                        history.goBack();
+                        navigate(-1);
                     } catch (e: any) {
                         console.trace(e);
 
@@ -61,7 +62,7 @@ export function NewSetting({ match }: RouteComponentProps<Props>) {
                             "success",
                             `Item '${orgSettingName}' has been created`
                         );
-                        history.goBack();
+                        navigate(-1);
                     } catch (e: any) {
                         console.trace(e);
 
@@ -82,11 +83,10 @@ export function NewSetting({ match }: RouteComponentProps<Props>) {
             <GridContainer>
                 <Grid row>
                     <Grid col="fill" className="text-bold">
-                        Org name:{" "}
-                        {match?.params?.orgname || "missing param 'orgname'"}
+                        Org name: {params?.orgname || "missing param 'orgname'"}
                         <br />
                         Setting Type:{" "}
-                        {match?.params?.settingtype ||
+                        {params?.settingtype ||
                             "missing param 'settingtype' (should be 'sender' or 'receiver')"}
                         <br />
                         <br />
@@ -106,7 +106,7 @@ export function NewSetting({ match }: RouteComponentProps<Props>) {
                     defaultnullvalue="[]"
                 />
                 <Grid row>
-                    <Button type="button" onClick={() => history.goBack()}>
+                    <Button type="button" onClick={() => navigate(-1)}>
                         Cancel
                     </Button>
                     <Button

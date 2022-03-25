@@ -1,11 +1,5 @@
 import { SideNav } from "@trussworks/react-uswds";
-import {
-    NavLink,
-    Redirect,
-    Route,
-    Switch,
-    useRouteMatch,
-} from "react-router-dom";
+import { NavLink, Navigate, Route, Routes } from "react-router-dom";
 
 import { CODES, ErrorPage } from "../error/ErrorPage";
 
@@ -15,34 +9,36 @@ import { SystemsAndSettings } from "./SystemsAndSettings";
 import { About } from "./About";
 
 export const HowItWorks = () => {
-    let { path, url } = useRouteMatch();
-
-    var itemsMenu = [
+    const itemsMenu = [
         <NavLink
-            to={`${url}/about`}
-            activeClassName="usa-current"
-            className="usa-nav__link"
+            to={`/about`}
+            className={(isActive) =>
+                isActive ? "usa-current" : "usa-nav__link"
+            }
         >
             About
         </NavLink>,
         <NavLink
-            to={`${url}/where-were-live`}
-            activeClassName="usa-current"
-            className="usa-nav__link"
+            to={`/where-were-live`}
+            className={(isActive) =>
+                isActive ? "usa-current" : "usa-nav__link"
+            }
         >
             Where we're live
         </NavLink>,
         <NavLink
-            to={`${url}/systems-and-settings`}
-            activeClassName="usa-current"
-            className="usa-nav__link"
+            to={`/systems-and-settings`}
+            className={(isActive) =>
+                isActive ? "usa-current" : "usa-nav__link"
+            }
         >
             Systems and settings
         </NavLink>,
         <NavLink
-            to={`${url}/security-practices`}
-            activeClassName="usa-current"
-            className="usa-nav__link"
+            to={`/security-practices`}
+            className={(isActive) =>
+                isActive ? "usa-current" : "usa-nav__link"
+            }
         >
             Security practices
         </NavLink>,
@@ -56,31 +52,31 @@ export const HowItWorks = () => {
                         <SideNav items={itemsMenu} />
                     </div>
                     <div className="tablet:grid-col-8 usa-prose rs-documentation">
-                        <Switch>
-                            {/* Handles anyone going to /how-it-works without extension */}
-                            <Route exact path={path}>
-                                <Redirect push to={`${path}/getting-started`} />
-                            </Route>
-                            <Route path={`${path}/about`} component={About} />
+                        <Routes>
                             <Route
-                                path={`${path}/where-were-live`}
-                                component={WhereWereLive}
+                                path={"/"}
+                                element={<Navigate to={"/about"} />}
+                            />
+                            <Route path={`/about`} element={<About />} />
+                            <Route
+                                path={`/where-were-live`}
+                                element={<WhereWereLive />}
                             />
                             <Route
-                                path={`${path}/systems-and-settings`}
-                                component={SystemsAndSettings}
+                                path={`/systems-and-settings`}
+                                element={<SystemsAndSettings />}
                             />
                             <Route
-                                path={`${path}/security-practices`}
-                                component={SecurityPractices}
+                                path={`/security-practices`}
+                                element={<SecurityPractices />}
                             />
                             {/* Handles any undefined route */}
                             <Route
-                                render={() => (
+                                element={
                                     <ErrorPage code={CODES.NOT_FOUND_404} />
-                                )}
+                                }
                             />
-                        </Switch>
+                        </Routes>
                     </div>
                 </div>
             </section>

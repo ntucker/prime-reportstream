@@ -1,12 +1,13 @@
 import { useOktaAuth } from "@okta/okta-react";
 import { Button } from "@trussworks/react-uswds";
 import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 import { logout } from "../../utils/UserUtils";
 
 const SignInOrUser = () => {
     const { oktaAuth, authState } = useOktaAuth();
+    const navigate = useNavigate();
     const [user, setUser] = useState("");
 
     useEffect(() => {
@@ -36,7 +37,11 @@ const SignInOrUser = () => {
         </div>
     ) : (
         <NavLink to="/daily-data">
-            <Button type="button" inverse={isPreview}>
+            <Button
+                onClick={() => navigate("/login")}
+                type="button"
+                inverse={isPreview}
+            >
                 Log in {isPreview ? "via OtkaPreview" : ""}
             </Button>
         </NavLink>

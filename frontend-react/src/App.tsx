@@ -1,7 +1,7 @@
 import { GovBanner } from "@trussworks/react-uswds";
-import { Route, Switch, useHistory } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { OktaAuth, toRelativeUrl } from "@okta/okta-auth-js";
-import { LoginCallback, SecureRoute, Security } from "@okta/okta-react";
+import { LoginCallback, Security } from "@okta/okta-react";
 import { isIE } from "react-device-detect";
 import { useIdleTimer } from "react-idle-timer";
 import React, { Suspense } from "react";
@@ -17,7 +17,7 @@ import { Login } from "./pages/Login";
 import { TermsOfService } from "./pages/TermsOfService";
 import { ReportStreamHeader } from "./components/header/ReportStreamHeader";
 import { oktaAuthConfig } from "./oktaConfig";
-import { AuthorizedRoute } from "./components/AuthorizedRoute";
+import { AuthGate } from "./components/AuthGate";
 import { PERMISSIONS } from "./resources/PermissionsResource";
 import { permissionCheck, reportReceiver } from "./webreceiver-utils";
 import { Upload } from "./pages/Upload";
@@ -48,9 +48,9 @@ const App = () => {
             process.env?.REACT_APP_CLIENT_ENV || "missing"
         }'`
     );
-    const history = useHistory();
+    const navigate = useNavigate();
     const customAuthHandler = (): void => {
-        history.push("/login");
+        navigate("../login");
     };
     const handleIdle = (): void => {
         logout(OKTA_AUTH);
@@ -64,7 +64,7 @@ const App = () => {
             !reportReceiver(authState) &&
             permissionCheck(PERMISSIONS.SENDER, authState)
         ) {
-            history.replace(
+            navigate(
                 toRelativeUrl(
                     `${window.location.origin}/upload`,
                     window.location.origin
@@ -72,7 +72,7 @@ const App = () => {
             );
             return;
         }
-        history.replace(toRelativeUrl(originalUri, window.location.origin));
+        navigate(toRelativeUrl(originalUri, window.location.origin));
     };
 
     useIdleTimer({
@@ -99,98 +99,143 @@ const App = () => {
                         {/* Changed from main to div to fix weird padding issue at the top
                             caused by USWDS styling | 01/22 merged styles from .content into main, don't see padding issues anymore? */}
                         <main id="main-content">
-                            <Switch>
-                                <Route path="/" exact={true} component={Home} />
+                            <Routes>
+                                <Route path="/" element={<Home />} />
                                 <Route
                                     path="/how-it-works"
-                                    component={HowItWorks}
+                                    element={<HowItWorks />}
                                 />
                                 <Route
                                     path="/terms-of-service"
-                                    component={TermsOfService}
+                                    element={<TermsOfService />}
                                 />
-                                <Route path="/login" render={() => <Login />} />
+                                <Route path="/login" element={<Login />} />
                                 <Route
                                     path="/login/callback"
-                                    component={LoginCallback}
+                                    element={<LoginCallback />}
                                 />
                                 <Route
                                     path="/sign-tos"
-                                    component={TermsOfServiceForm}
+                                    element={<TermsOfServiceForm />}
                                 />
                                 <Route
                                     path="/getting-started/public-health-departments"
-                                    component={
-                                        GettingStartedPublicHealthDepartments
+                                    element={
+                                        <GettingStartedPublicHealthDepartments />
                                     }
                                 />
                                 <Route
                                     path="/getting-started/testing-facilities"
-                                    component={GettingStartedTestingFacilities}
+                                    element={
+                                        <GettingStartedTestingFacilities />
+                                    }
                                 />
-                                <AuthorizedRoute
+                                <Route
                                     path="/daily-data"
-                                    authorize={PERMISSIONS.RECEIVER}
-                                    component={Daily}
+                                    element={
+                                        <AuthGate
+                                            authLevel={PERMISSIONS.RECEIVER}
+                                            element={<Daily />}
+                                        />
+                                    }
                                 />
-                                <AuthorizedRoute
+                                <Route
                                     path="/upload"
-                                    authorize={PERMISSIONS.SENDER}
-                                    component={Upload}
+                                    element={
+                                        <AuthGate
+                                            authLevel={PERMISSIONS.SENDER}
+                                            element={<Upload />}
+                                        />
+                                    }
                                 />
-                                {/* TODO: AuthorizedRoute needs to take many potential auth groups.
-                                 *  We should fix this when we refactor our permissions layer.
-                                 */}
-                                <AuthorizedRoute
+                                <Route
                                     path="/submissions/:actionId"
-                                    authorize={PERMISSIONS.SENDER}
-                                    component={SubmissionDetails}
+                                    element={
+                                        <AuthGate
+                                            authLevel={PERMISSIONS.SENDER}
+                                            element={<SubmissionDetails />}
+                                        />
+                                    }
                                 />
-                                <AuthorizedRoute
+                                <Route
                                     path="/submissions"
-                                    authorize={PERMISSIONS.SENDER}
-                                    component={Submissions}
+                                    element={
+                                        <AuthGate
+                                            authLevel={PERMISSIONS.SENDER}
+                                            element={<Submissions />}
+                                        />
+                                    }
                                 />
-                                <AuthorizedRoute
+                                <Route
                                     path="/admin/settings"
-                                    authorize={PERMISSIONS.PRIME_ADMIN}
-                                    component={AdminMain}
+                                    element={
+                                        <AuthGate
+                                            authLevel={PERMISSIONS.PRIME_ADMIN}
+                                            element={<AdminMain />}
+                                        />
+                                    }
                                 />
-                                <AuthorizedRoute
+                                <Route
                                     path="/admin/orgsettings/org/:orgname"
-                                    authorize={PERMISSIONS.PRIME_ADMIN}
-                                    component={AdminOrgEdit}
+                                    element={
+                                        <AuthGate
+                                            authLevel={PERMISSIONS.PRIME_ADMIN}
+                                            element={<AdminOrgEdit />}
+                                        />
+                                    }
                                 />
-                                <AuthorizedRoute
+                                <Route
                                     path="/admin/orgreceiversettings/org/:orgname/receiver/:receivername/action/:action"
-                                    authorize={PERMISSIONS.PRIME_ADMIN}
-                                    component={EditReceiverSettings}
+                                    element={
+                                        <AuthGate
+                                            authLevel={PERMISSIONS.PRIME_ADMIN}
+                                            element={<EditReceiverSettings />}
+                                        />
+                                    }
                                 />
-                                <AuthorizedRoute
+                                <Route
                                     path="/admin/orgsendersettings/org/:orgname/sender/:sendername/action/:action"
-                                    authorize={PERMISSIONS.PRIME_ADMIN}
-                                    component={EditSenderSettings}
+                                    element={
+                                        <AuthGate
+                                            authLevel={PERMISSIONS.PRIME_ADMIN}
+                                            element={<EditSenderSettings />}
+                                        />
+                                    }
                                 />
-                                <AuthorizedRoute
+                                <Route
                                     path="/admin/orgnewsetting/org/:orgname/settingtype/:settingtype"
-                                    authorize={PERMISSIONS.PRIME_ADMIN}
-                                    component={NewSetting}
+                                    element={
+                                        <AuthGate
+                                            authLevel={PERMISSIONS.PRIME_ADMIN}
+                                            element={<NewSetting />}
+                                        />
+                                    }
                                 />
-                                <SecureRoute
+                                <Route
                                     path="/report-details"
-                                    component={Details}
+                                    element={
+                                        <AuthGate
+                                            authLevel={PERMISSIONS.RECEIVER}
+                                            element={<Details />}
+                                        />
+                                    }
                                 />
-                                <SecureRoute
+                                <Route
                                     path="/features"
-                                    component={FeatureFlagUIComponent}
+                                    element={
+                                        <AuthGate
+                                            authLevel={PERMISSIONS.PRIME_ADMIN}
+                                            element={<FeatureFlagUIComponent />}
+                                        />
+                                    }
                                 />
                                 {/* Handles any undefined route */}
                                 <Route
-                                    render={() => (
+                                    element={
                                         <ErrorPage code={CODES.NOT_FOUND_404} />
-                                    )}
+                                    }
                                 />
-                            </Switch>
+                            </Routes>
                         </main>
                         <ToastContainer limit={4} />
                         <footer className="usa-identifier footer">

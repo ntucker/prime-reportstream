@@ -1,7 +1,7 @@
 import React, { Suspense, useRef, useState } from "react";
 import { Button, Grid, GridContainer } from "@trussworks/react-uswds";
 import { NetworkErrorBoundary, useController, useResource } from "rest-hooks";
-import { RouteComponentProps, useHistory } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import { ErrorPage } from "../../pages/error/ErrorPage";
 import OrgReceiverSettingsResource from "../../resources/OrgReceiverSettingsResource";
@@ -29,14 +29,15 @@ type Props = {
     action: "edit" | "clone";
 };
 
-export function EditReceiverSettings({ match }: RouteComponentProps<Props>) {
-    const orgname = match?.params?.orgname || "";
-    const receivername = match?.params?.receivername || "";
-    const action = match?.params?.action || "";
+export function EditReceiverSettings() {
+    const params = useParams<Props>();
+    const orgname = params?.orgname || "";
+    const receivername = params?.receivername || "";
+    const action = params?.action || "";
 
     const FormComponent = () => {
         const [loading, setLoading] = useState(false);
-        const history = useHistory();
+        const navigate = useNavigate();
         const confirmModalRef = useRef<ConfirmSaveSettingModalRef>(null);
 
         const orgReceiverSettings: OrgReceiverSettingsResource = useResource(
@@ -116,7 +117,7 @@ export function EditReceiverSettings({ match }: RouteComponentProps<Props>) {
                 );
                 setLoading(false);
                 confirmModalRef?.current?.toggleModal(undefined, false);
-                history.goBack();
+                navigate(-1);
             } catch (e: any) {
                 console.trace(e);
                 showError(
@@ -132,12 +133,10 @@ export function EditReceiverSettings({ match }: RouteComponentProps<Props>) {
             <GridContainer containerSize={"desktop"}>
                 <Grid row>
                     <Grid col="fill" className="text-bold">
-                        Org name:{" "}
-                        {match?.params?.orgname || "missing param 'orgname'"}
+                        Org name: {params?.orgname || "missing param 'orgname'"}
                         <br />
                         Receiver name:{" "}
-                        {match?.params?.receivername ||
-                            "missing param 'receivername'"}
+                        {params?.receivername || "missing param 'receivername'"}
                         <br />
                         <br />
                     </Grid>
@@ -246,7 +245,7 @@ export function EditReceiverSettings({ match }: RouteComponentProps<Props>) {
                     <Button
                         type="button"
                         onClick={async () =>
-                            (await resetReceiverList()) && history.goBack()
+                            (await resetReceiverList()) && navigate(-1)
                         }
                     >
                         Cancel

@@ -1,11 +1,5 @@
 import { SideNav } from "@trussworks/react-uswds";
-import {
-    NavLink,
-    Redirect,
-    Route,
-    Switch,
-    useRouteMatch,
-} from "react-router-dom";
+import { NavLink, Navigate, Route, Routes } from "react-router-dom";
 
 import { CODES, ErrorPage } from "../../error/ErrorPage";
 
@@ -15,34 +9,36 @@ import { CsvUploadGuide } from "./CsvUploadGuide";
 import { CsvSchemaDocumentation } from "./CsvSchemaDocumentation";
 
 export const GettingStartedTestingFacilities = () => {
-    let { path, url } = useRouteMatch();
-
-    var itemsMenu = [
+    const itemsMenu = [
         <NavLink
-            to={`${url}/overview`}
-            activeClassName="usa-current"
-            className="usa-nav__link"
+            to={`/overview`}
+            className={(isActive) =>
+                isActive ? "usa-current" : "usa-nav__link"
+            }
         >
             Overview
         </NavLink>,
         <NavLink
-            to={`${url}/account-registration-guide`}
-            activeClassName="usa-current"
-            className="usa-nav__link"
+            to={`/account-registration-guide`}
+            className={(isActive) =>
+                isActive ? "usa-current" : "usa-nav__link"
+            }
         >
             Account registration guide
         </NavLink>,
         <NavLink
-            to={`${url}/csv-upload-guide`}
-            activeClassName="usa-current"
-            className="usa-nav__link"
+            to={`/csv-upload-guide`}
+            className={(isActive) =>
+                isActive ? "usa-current" : "usa-nav__link"
+            }
         >
             CSV upload guide
         </NavLink>,
         <NavLink
-            to={`${url}/csv-schema`}
-            activeClassName="usa-current"
-            className="usa-nav__link"
+            to={`/csv-schema`}
+            className={(isActive) =>
+                isActive ? "usa-current" : "usa-nav__link"
+            }
         >
             CSV schema documentation
         </NavLink>,
@@ -70,34 +66,34 @@ export const GettingStartedTestingFacilities = () => {
                         <SideNav items={itemsMenu} />
                     </div>
                     <div className="tablet:grid-col-8 usa-prose">
-                        <Switch>
+                        <Routes>
                             {/* Handles anyone going to /getting-started without extension */}
-                            <Route exact path={path}>
-                                <Redirect push to={`${path}/overview`} />
+                            <Route path={"/"}>
+                                <Navigate replace to={`/overview`} />
                             </Route>
                             <Route
-                                path={`${path}/overview`}
-                                component={FacilitiesOverview}
+                                path={`/overview`}
+                                element={FacilitiesOverview}
                             />
                             <Route
-                                path={`${path}/account-registration-guide`}
-                                component={AccountRegistrationGuide}
+                                path={`/account-registration-guide`}
+                                element={AccountRegistrationGuide}
                             />
                             <Route
-                                path={`${path}/csv-upload-guide`}
-                                component={CsvUploadGuide}
+                                path={`/csv-upload-guide`}
+                                element={CsvUploadGuide}
                             />
                             <Route
-                                path={`${path}/csv-schema`}
-                                component={CsvSchemaDocumentation}
+                                path={`/csv-schema`}
+                                element={CsvSchemaDocumentation}
                             />
                             {/* Handles any undefined route */}
                             <Route
-                                render={() => (
+                                element={
                                     <ErrorPage code={CODES.NOT_FOUND_404} />
-                                )}
+                                }
                             />
-                        </Switch>
+                        </Routes>
                     </div>
                 </div>
             </section>

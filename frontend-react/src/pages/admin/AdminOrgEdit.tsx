@@ -1,7 +1,7 @@
 import React, { Suspense, useRef, useState } from "react";
 import { Helmet } from "react-helmet";
 import { NetworkErrorBoundary, useController, useResource } from "rest-hooks";
-import { RouteComponentProps } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Button, Grid, GridContainer } from "@trussworks/react-uswds";
 
 import HipaaNotice from "../../components/HipaaNotice";
@@ -32,13 +32,12 @@ type AdminOrgEditProps = {
     orgname: string;
 };
 
-export function AdminOrgEdit({
-    match,
-}: RouteComponentProps<AdminOrgEditProps>) {
-    const orgname = match?.params?.orgname || "";
+export function AdminOrgEdit() {
+    const params = useParams<AdminOrgEditProps>();
+    const orgName = params?.orgname || "";
     const orgSettings: OrgSettingsResource = useResource(
         OrgSettingsResource.detail(),
-        { orgname: orgname }
+        { orgname: orgName }
     );
     const confirmModalRef = useRef<ConfirmSaveSettingModalRef>(null);
 
@@ -55,7 +54,7 @@ export function AdminOrgEdit({
             const organization = getStoredOrg();
 
             const response = await fetch(
-                `${process.env.REACT_APP_BACKEND_URL}/api/settings/organizations/${orgname}`,
+                `${process.env.REACT_APP_BACKEND_URL}/api/settings/organizations/${orgName}`,
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
@@ -85,17 +84,17 @@ export function AdminOrgEdit({
             showAlertNotification("success", `Saving...`);
             await fetchController(
                 OrgSettingsResource.update(),
-                { orgname },
+                { orgname: orgName },
                 data
             );
             showAlertNotification(
                 "success",
-                `Item '${orgname}' has been updated`
+                `Item '${orgName}' has been updated`
             );
             confirmModalRef?.current?.toggleModal(undefined, false);
-            showAlertNotification("success", `Saved '${orgname}' setting.`);
+            showAlertNotification("success", `Saved '${orgName}' setting.`);
         } catch (e: any) {
-            showError(`Updating item '${orgname}' failed. ${e.toString()}`);
+            showError(`Updating item '${orgName}' failed. ${e.toString()}`);
             return false;
         }
 
@@ -112,8 +111,7 @@ export function AdminOrgEdit({
             <section className="grid-container margin-bottom-5">
                 <h2 className="margin-bottom-0">
                     <Suspense fallback={<Spinner />}>
-                        Org name:{" "}
-                        {match?.params?.orgname || "missing param 'orgname'"}
+                        Org name: {params?.orgname || "missing param 'orgname'"}
                     </Suspense>
                 </h2>
             </section>
@@ -179,7 +177,7 @@ export function AdminOrgEdit({
                                 </Button>
                             </Grid>
                             <ConfirmSaveSettingModal
-                                uniquid={orgname}
+                                uniquid={orgName}
                                 onConfirm={saveOrgData}
                                 ref={confirmModalRef}
                                 oldjson={orgSettingsOldJson}
@@ -189,8 +187,8 @@ export function AdminOrgEdit({
 
                         <br />
                     </section>
-                    <OrgSenderTable orgname={orgname} />
-                    <OrgReceiverTable orgname={orgname} />
+                    <OrgSenderTable orgname={orgName} />
+                    <OrgReceiverTable orgname={orgName} />
                 </Suspense>
             </NetworkErrorBoundary>
             <HipaaNotice />

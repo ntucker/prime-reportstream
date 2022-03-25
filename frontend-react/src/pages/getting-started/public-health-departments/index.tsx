@@ -1,11 +1,5 @@
 import { SideNav } from "@trussworks/react-uswds";
-import {
-    NavLink,
-    Redirect,
-    Route,
-    Switch,
-    useRouteMatch,
-} from "react-router-dom";
+import { NavLink, Navigate, Route, Routes } from "react-router-dom";
 
 import { CODES, ErrorPage } from "../../error/ErrorPage";
 
@@ -14,27 +8,28 @@ import { ELRChecklist } from "./ElrChecklist";
 import { DataDownloadGuide } from "./DataDownloadGuide";
 
 export const GettingStartedPublicHealthDepartments = () => {
-    let { path, url } = useRouteMatch();
-
-    var itemsMenu = [
+    const itemsMenu = [
         <NavLink
-            to={`${url}/overview`}
-            activeClassName="usa-current"
-            className="usa-nav__link"
+            to={`/overview`}
+            className={(isActive) =>
+                isActive ? "usa-current" : "usa-nav__link"
+            }
         >
             Overview
         </NavLink>,
         <NavLink
-            to={`${url}/elr-checklist`}
-            activeClassName="usa-current"
-            className="usa-nav__link"
+            to={`/elr-checklist`}
+            className={(isActive) =>
+                isActive ? "usa-current" : "usa-nav__link"
+            }
         >
             ELR onboarding checklist
         </NavLink>,
         <NavLink
-            to={`${url}/data-download-guide`}
-            activeClassName="usa-current"
-            className="usa-nav__link"
+            to={`/data-download-guide`}
+            className={(isActive) =>
+                isActive ? "usa-current" : "usa-nav__link"
+            }
         >
             Data download website guide
         </NavLink>,
@@ -62,30 +57,31 @@ export const GettingStartedPublicHealthDepartments = () => {
                         <SideNav items={itemsMenu} />
                     </div>
                     <div className="tablet:grid-col-8 usa-prose">
-                        <Switch>
+                        <Routes>
                             {/* Handles anyone going to /getting-started without extension */}
-                            <Route exact path={path}>
-                                <Redirect push to={`${path}/overview`} />
-                            </Route>
                             <Route
-                                path={`${path}/overview`}
-                                component={PhdOverview}
+                                path={"/"}
+                                element={<Navigate to={"/overview"} />}
                             />
                             <Route
-                                path={`${path}/elr-checklist`}
-                                component={ELRChecklist}
+                                path={`/overview`}
+                                element={<PhdOverview />}
                             />
                             <Route
-                                path={`${path}/data-download-guide`}
-                                component={DataDownloadGuide}
+                                path={`/elr-checklist`}
+                                element={<ELRChecklist />}
+                            />
+                            <Route
+                                path={`/data-download-guide`}
+                                element={<DataDownloadGuide />}
                             />
                             {/* Handles any undefined route */}
                             <Route
-                                render={() => (
+                                element={
                                     <ErrorPage code={CODES.NOT_FOUND_404} />
-                                )}
+                                }
                             />
-                        </Switch>
+                        </Routes>
                     </div>
                 </div>
             </section>

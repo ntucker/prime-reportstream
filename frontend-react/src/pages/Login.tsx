@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Link, Redirect } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useOktaAuth } from "@okta/okta-react";
 import { SiteAlert } from "@trussworks/react-uswds";
 import { Tokens } from "@okta/okta-auth-js";
@@ -50,7 +50,7 @@ export const Login = () => {
     };
 
     return authState && authState.isAuthenticated ? (
-        <Redirect to={{ pathname: "/" }} />
+        <Navigate to={"/"} />
     ) : (
         <>
             <MonitoringAlert />

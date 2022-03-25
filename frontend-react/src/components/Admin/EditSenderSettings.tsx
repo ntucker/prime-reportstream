@@ -1,7 +1,7 @@
 import React, { Suspense, useRef, useState } from "react";
 import { Button, Grid, GridContainer } from "@trussworks/react-uswds";
 import { NetworkErrorBoundary, useController, useResource } from "rest-hooks";
-import { RouteComponentProps, useHistory } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import { ErrorPage } from "../../pages/error/ErrorPage";
 import OrgSenderSettingsResource from "../../resources/OrgSenderSettingsResource";
@@ -21,13 +21,14 @@ import {
 
 type Props = { orgname: string; sendername: string; action: "edit" | "clone" };
 
-export function EditSenderSettings({ match }: RouteComponentProps<Props>) {
-    const orgname = match?.params?.orgname || "";
-    const sendername = match?.params?.sendername || "";
-    const action = match?.params?.action || "";
+export function EditSenderSettings() {
+    const params = useParams<Props>();
+    const orgname = params?.orgname || "";
+    const sendername = params?.sendername || "";
+    const action = params?.action || "";
 
     const FormComponent = () => {
-        const history = useHistory();
+        const navigate = useNavigate();
         const confirmModalRef = useRef<ConfirmSaveSettingModalRef>(null);
 
         const orgSenderSettings: OrgSenderSettingsResource = useResource(
@@ -109,7 +110,7 @@ export function EditSenderSettings({ match }: RouteComponentProps<Props>) {
                 );
                 confirmModalRef?.current?.toggleModal(undefined, false);
                 setLoading(false);
-                history.goBack();
+                navigate(-1);
             } catch (e: any) {
                 console.trace(e);
                 showError(
@@ -124,12 +125,10 @@ export function EditSenderSettings({ match }: RouteComponentProps<Props>) {
             <GridContainer>
                 <Grid row>
                     <Grid col="fill" className="text-bold">
-                        Org name:{" "}
-                        {match?.params?.orgname || "missing param 'orgname'"}
+                        Org name: {params?.orgname || "missing param 'orgname'"}
                         <br />
                         Sender name:{" "}
-                        {match?.params?.sendername ||
-                            "missing param 'sendername'"}
+                        {params?.sendername || "missing param 'sendername'"}
                         <br />
                         <br />
                     </Grid>
@@ -184,7 +183,7 @@ export function EditSenderSettings({ match }: RouteComponentProps<Props>) {
                     <Button
                         type="button"
                         onClick={async () =>
-                            (await resetSenderList()) && history.goBack()
+                            (await resetSenderList()) && navigate(-1)
                         }
                     >
                         Cancel

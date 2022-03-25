@@ -27,8 +27,15 @@ jest.mock("rest-hooks", () => ({
 
 // TODO: Auto mock module?
 jest.mock("react-router-dom", () => ({
-    useHistory: () => {
-        return { goBack: jest.fn() };
+    useNavigate: () => {
+        return jest.fn;
+    },
+    useParams: () => {
+        return {
+            orgname: "abbott",
+            sendername: "user1234",
+            action: "edit",
+        };
     },
 }));
 
@@ -60,22 +67,8 @@ describe("EditSenderSettings", () => {
     afterEach(() => settingsServer.resetHandlers());
     afterAll(() => settingsServer.close());
 
-    const mockRouteComponentProps = {
-        history: {} as any,
-        location: {} as any,
-        match: {
-            params: {
-                orgname: "abbott",
-                sendername: "user1234",
-                action: "edit",
-            },
-        } as any,
-    };
-
     test("should be able to edit keys field", async () => {
-        const container = render(
-            <EditSenderSettings {...mockRouteComponentProps} />
-        );
+        const container = render(<EditSenderSettings />);
         const keysField = container.getByTestId("keys");
 
         expect(keysField).toBeInTheDocument();
@@ -86,9 +79,7 @@ describe("EditSenderSettings", () => {
     });
 
     test("should be able to edit processing type field", async () => {
-        const container = render(
-            <EditSenderSettings {...mockRouteComponentProps} />
-        );
+        const container = render(<EditSenderSettings />);
         const processingTypeField = container.getByTestId("processingType");
 
         expect(processingTypeField).toBeInTheDocument();
