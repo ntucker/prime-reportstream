@@ -55,7 +55,7 @@ When adding KDoc comments to other people's code, you may see a property that yo
  * @property argPath the local location of the argList
 
 ```
-Now, nobody knows what kVortex is.  And because there is a description, it's not obvious that this is a problem. The better solution is to leave the description missing from the property.
+Now, nobody knows what kVortex is.  And because some kind of description exists for kVortex, it's not obvious that this is a problem. The better solution is to leave the description missing from the property.
 ```
  * @property landFill additional spacing for landscape orientation
  * @property kVortex
@@ -64,5 +64,8 @@ Now, nobody knows what kVortex is.  And because there is a description, it's not
 ```
 In this way, someone who knows what this value is can see that the description is missing and fill it in.  Better still is to contact the person who wrote the code and ask what the property does.
 
-##Finally:
+## Always:
 Be clear and concise when describing a block tag (like `@property`)
+
+## Try no to leave out important kdoc [block tags](https://kotlinlang.org/docs/kotlin-doc.html#block-tags).
+For instance, if your method returns a value, include a @returns block tags.  As we get to know the block tags, we can help each other to include them via the PR review.
