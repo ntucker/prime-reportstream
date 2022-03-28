@@ -68,4 +68,4 @@ In this way, someone who knows what this value is can see that the description i
 Be clear and concise when describing a block tag (like `@property`)
 
 ## Try no to leave out important kdoc [block tags](https://kotlinlang.org/docs/kotlin-doc.html#block-tags).
-For instance, if your method returns a value, include a @returns block tags.  As we get to know the block tags, we can help each other to include them via the PR review.
+For instance, if your method returns a value, include an `@return` block tag.  As we get to know the block tags, we can help each other to include them via the PR review.
