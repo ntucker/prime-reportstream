@@ -1,7 +1,7 @@
 ## KDoc usage
 
 Kotlin's documentation generation language is called *KDoc*.
-Basic information can be found [here](https://kotlinlang.org/docs/kotlin-doc.html).
+Basic information can be found at [https://kotlinlang.org/docs/kotlin-doc.html](https://kotlinlang.org/docs/kotlin-doc.html).
 There are a few things to keep in mind when writing/editing KDoc comments in your code.
 
 ### KDoc comments look *almost* like standard comments
@@ -67,5 +67,6 @@ In this way, someone who knows what this value is can see that the description i
 ## Always:
 Be clear and concise when describing a block tag (like `@property`)
 
-## Try not to leave out important KDoc [block tags](https://kotlinlang.org/docs/kotlin-doc.html#block-tags).
+## Try not to leave out important KDoc block tags.
+The full list can be found at [https://kotlinlang.org/docs/kotlin-doc.html#block-tags](https://kotlinlang.org/docs/kotlin-doc.html#block-tags)
 For instance, if your method returns a value, include an `@return` block tag.  As we get to know the block tags, we can help each other to include them via the PR review.
