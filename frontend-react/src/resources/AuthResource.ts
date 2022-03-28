@@ -11,15 +11,13 @@ export default class AuthResource extends Resource {
     }
 
     static useFetchInit = (init: RequestInit): RequestInit => {
-        const accessToken = getStoredOktaToken();
-        const organization = getStoredOrg();
-
         return {
             ...init,
             headers: {
                 ...init.headers,
-                Authorization: `Bearer ${accessToken}`,
-                Organization: organization || "",
+                Authorization: `Bearer ${getStoredOktaToken() || ""}`,
+                Organization: getStoredOrg() || "",
+                "Authentication-Type": "okta",
             },
         };
     };

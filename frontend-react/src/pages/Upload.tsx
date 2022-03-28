@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
     Button,
     Form,
@@ -12,9 +12,9 @@ import moment from "moment";
 
 import { senderClient } from "../webreceiver-utils";
 import SenderOrganizationResource from "../resources/SenderOrganizationResource";
-import { getStoredOrg } from "../contexts/SessionStorageTools";
 import { showError } from "../components/AlertNotifications";
 import Spinner from "../components/Spinner";
+import { SessionStorageContext } from "../contexts/SessionStorageContext";
 
 // values taken from Report.kt
 const PAYLOAD_MAX_BYTES = 50 * 1000 * 1000; // no idea why this isn't in "k" (* 1024).
@@ -39,10 +39,11 @@ export const Upload = () => {
     const [errorMessageText, setErrorMessageText] = useState(
         `Please resolve the errors below and upload your edited file. Your file has not been accepted.`
     );
+    const session = useContext(SessionStorageContext);
 
     const client = senderClient(authState);
     const organization = useResource(SenderOrganizationResource.detail(), {
-        name: getStoredOrg(),
+        name: session.values.org,
     });
 
     const userName = {

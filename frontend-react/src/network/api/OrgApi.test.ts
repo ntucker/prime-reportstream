@@ -9,6 +9,7 @@ describe("Organization API", () => {
             headers: {
                 Authorization: "Bearer ",
                 Organization: "",
+                "Authentication-Type": "okta",
             },
             responseType: "json",
         });
@@ -22,6 +23,7 @@ describe("Organization API", () => {
             headers: {
                 Authorization: "Bearer ",
                 Organization: "",
+                "Authentication-Type": "okta",
             },
             responseType: "json",
         });
@@ -35,6 +37,7 @@ describe("Organization API", () => {
             headers: {
                 Authorization: "Bearer ",
                 Organization: "",
+                "Authentication-Type": "okta",
             },
             responseType: "json",
         });

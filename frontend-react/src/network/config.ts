@@ -10,5 +10,6 @@ export const primeApiConfig = new ApiConfig({
     headers: {
         Authorization: `Bearer ${getStoredOktaToken() || ""}`,
         Organization: getStoredOrg() || "",
+        "Authentication-Type": "okta",
     },
 });
