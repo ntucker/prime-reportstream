@@ -2,7 +2,7 @@
 
 Kotlin's documentation generation language is called *KDoc*.
 Basic information can be found [here](https://kotlinlang.org/docs/kotlin-doc.html).
-There are three things to keep in mind when writing/editing KDoc comments in your code.
+There are a few things to keep in mind when writing/editing KDoc comments in your code.
 
 ### KDoc comments look *almost* like standard comments
 ```
@@ -23,7 +23,7 @@ Every block tag begins on a new line and starts with the @ character.
 
 
 ### Your comments should have meaning
-A lot of the documentation for KDOC includes obvious language:
+A lot of the example documentation for KDoc on the web includes "obvious language":
 ```
 /**
  * A class for user objects
@@ -35,7 +35,7 @@ A lot of the documentation for KDOC includes obvious language:
  * @property expDate the expDate of the user
  */
 ```
-From these descriptions, we learn nothing more than what the names convey.  
+From these examples, we are encouraged state nothing more than what the names convey.  We should go beyond this commenting style, and convey meaningful information:
 
 ```
 /**
@@ -45,17 +45,17 @@ From these descriptions, we learn nothing more than what the names convey.
  *
  * @property name The name of the user
  * @property statPin static password (PIN) for bailing out users
- * @property expDate exploration atart date
+ * @property expDate exploration start date
  */
 ```
-When adding KDoc comments to other people's code, you may see a property that you know nothing about.  It is very tempting to fill in with this obvipous language.
+When adding KDoc comments to other people's code, you may see a property that you know nothing about.  It is very tempting to fill in with this "obvious language."
 ```
  * @property landFill additional spacing for landscape orientation
  * @property kVortex the kVortex value of this document
  * @property argPath the local location of the argList
 
 ```
-Now, nobody knows what kVortex is.  And because some kind of description exists for kVortex, it's not obvious that this is a problem. The better solution is to leave the description missing from the property.
+Now, nobody knows what kVortex is.  And because some kind of description exists for kVortex, it's not clear that there is a problem. The better solution is to leave the description missing from the property.
 ```
  * @property landFill additional spacing for landscape orientation
  * @property kVortex
@@ -67,5 +67,5 @@ In this way, someone who knows what this value is can see that the description i
 ## Always:
 Be clear and concise when describing a block tag (like `@property`)
 
-## Try no to leave out important kdoc [block tags](https://kotlinlang.org/docs/kotlin-doc.html#block-tags).
+## Try not to leave out important KDoc [block tags](https://kotlinlang.org/docs/kotlin-doc.html#block-tags).
 For instance, if your method returns a value, include an `@return` block tag.  As we get to know the block tags, we can help each other to include them via the PR review.
