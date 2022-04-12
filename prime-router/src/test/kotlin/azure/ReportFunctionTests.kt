@@ -50,6 +50,7 @@ class ReportFunctionTests {
         ),
     )
 
+    // this is a throwaway comment
     private fun makeEngine(metadata: Metadata, settings: SettingsProvider): WorkflowEngine {
         return spyk(
             WorkflowEngine.Builder().metadata(metadata).settingsProvider(settings).databaseAccess(accessSpy)
