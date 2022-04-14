@@ -21,6 +21,11 @@ You need to include the double asterisk on the top line
 >By convention, the first paragraph of the documentation text (the block of text until the first blank line) is the summary description of the element, and the following text is the detailed description.
 Every block tag begins on a new line and starts with the @ character.
 
+### Other tag block that you should include
+
+If you are documenting a class, you should document the properties of the class with @property
+If you are documenting a method, you should include an @parameter for each parameter.  Also,
+include an @return tag block to describe what is returned by the method.
 
 ### Your comments should have meaning
 A lot of the example documentation for KDoc on the web includes "obvious language":
@@ -63,6 +68,7 @@ Now, nobody knows what kVortex is.  And because some kind of description exists 
 
 ```
 In this way, someone who knows what this value is can see that the description is missing and fill it in.  Better still is to contact the person who wrote the code and ask what the property does.
+
 
 ## Always:
 Be clear and concise when describing a block tag (like `@property`)
