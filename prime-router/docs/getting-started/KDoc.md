@@ -23,9 +23,9 @@ Every block tag begins on a new line and starts with the @ character.
 
 ### Other tag block that you should include
 
-If you are documenting a class, you should document the properties of the class with @property
-If you are documenting a method, you should include an @parameter for each parameter.  Also,
-include an @return tag block to describe what is returned by the method.
+If you are documenting a class, you should document the properties of the class with ```@property```
+If you are documenting a method, you should include an ```@parameter``` for each parameter.  Also,
+include an ```@return``` tag block to describe what is returned by the method.
 
 ### Your comments should have meaning
 A lot of the example documentation for KDoc on the web includes "obvious language":
