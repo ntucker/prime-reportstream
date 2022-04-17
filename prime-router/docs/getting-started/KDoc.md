@@ -26,7 +26,15 @@ Every block tag begins on a new line and starts with the @ character.
 If you are documenting a class, you should document the properties of the class with ```@property```
 If you are documenting a method, you should include an ```@parameter``` for each parameter.  Also,
 include an ```@return``` tag block to describe what is returned by the method.
-
+#### Here is an example for a word-counting method, ```wordCount()```
+```
+/**
+ * returns the word count from a string
+ *
+ * @param inStr the target string for counting words
+ * @return the number of words in inStr (0 if null)
+ */
+```
 ### Your comments should have meaning
 A lot of the example documentation for KDoc on the web includes "obvious language":
 ```
